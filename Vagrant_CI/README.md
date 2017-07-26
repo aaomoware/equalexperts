@@ -1,20 +1,20 @@
-##ci
+## ci
 Installs jenkins, config admin account, get plugins, and creates a small job - using Jekninsfile
 
-##ansible
+## ansible
 ansible 2.2.0.0
 
-#vagrant box
+## vagrant box
 CentOS7
 
-##jenkins creds
+## jenkins creds
 username: vagrant
 password: vagrant
 
-##jenkins
+## jenkins
 http://192.168.2.64:8080
 
-##tested on
+## tested on
 Distributor ID:	Ubuntu
 Description:	Ubuntu 16.04.2 LTS
 Release:	16.04
