@@ -15,10 +15,18 @@ function create_new_gists () {
 }
 
 #----
-
-token='55596fab88da837c6b877bd48bfa34aa84d82490'
-GIST_user="aaomoware"
+red='\033[0;31m'
+default='\033[0m'
 GIST_api="https://api.github.com/gists"
+
+if [ "$#" -gt "1" ] 
+	then
+		GIST_user=$1
+		token=$2
+else
+	echo -e "\n${red}Both github username & token are needed${default}\n"
+	exit 1
+fi
 
 create_new_gists
 exit 0
