@@ -1,0 +1,110 @@
+#!/bin/bash -x
+
+# A A Omoware
+# Setup
+# * Docker Env
+# * Build docker image
+# * Minikube Env
+# * Create a pod
+# * LoadBalancer the pod/app
+# dk: docker
+# mk: minikube
+# Docs:
+# * https://docs.docker.com/registry/
+# * https://kubernetes.io/docs/user-guide/docker-cli-to-kubectl/
+# * https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository
+#-----------------------------------------------------------------------------------------------------
+
+function setup_dk_env() {
+	echo -e "\n\n${red}Setting up docker environment..${default}\n"
+
+	apt-get install -y --no-install-recommends \
+	linux-image-extra-$(uname -r) \
+	linux-image-extra-virtual
+
+	apt-get install \
+	apt-transport-https \
+	ca-certificates \
+	curl \
+	software-properties-common
+
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+	add-apt-repository \
+	"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+	$(lsb_release -cs) \
+	stable"
+
+	apt-key fingerprint 0EBFCD88
+	apt-get update -y
+	apt-get install docker-ce -y
+
+	systemctl start docker
+}
+
+function build_dk_image() {
+	echo -e "\n\n${red}Creating docker image..${default}\n"
+
+	eval $(minikube docker-env)
+	docker build -t $DOCKER_image_name:v$DOCKER_image_version .
+}
+
+function setup_mk_env() {
+	echo -e "\n\n${red}Setting up minikube environment..${default}\n"
+	apt-get install virtualbox -y
+
+	if ls $MINIKUBE_bin_dir/minikube; then
+		echo -e "\n\n${red}A version of minikube already exist..${default}\n"
+	else
+		curl -Lo minikube $MINIKUBE_latest_bin
+		chmod +x minikube
+		mv minikube $MINIKUBE_bin_dir/
+	fi
+
+	if ls $MINIKUBE_bin_dir/kubectl; then
+		echo -e "\n\n${red}A version of kubectl already exist..${default}\n"
+	else
+		curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+		chmod +x kubectl
+		mv kubectl $MINIKUBE_bin_dir/
+	fi
+
+	minikube start
+	build_dk_image
+	create_a_pod
+}
+
+function create_a_pod() {
+	echo -e "\n\n${red}Creating a pod..${default}\n"
+	kubectl run $KUBERNETES_pod_name --image=$DOCKER_image_name:v$DOCKER_image_version --port=$KUBERNETES_pod_port
+	loadbalancer_a_pod
+
+}
+
+function loadbalancer_a_pod() {
+	echo -e "\n\n${red}Load balancing the app..${default}\n"
+	kubectl expose deployment $KUBERNETES_pod_name --type=LoadBalancer
+	minikube service $KUBERNETES_pod_name --url
+	minikube service $KUBERNETES_pod_name  # fires up a browser
+}
+
+function setup() {
+	setup_dk_env
+	setup_mk_env
+}
+
+#--
+
+red='\033[0;31m'
+default='\033[0m'
+DOCKER_image_version="1"
+DOCKER_image_name="equalexpert"
+
+MINIKUBE_bin_dir="/usr/local/bin"
+MINIKUBE_latest_bin="https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+
+KUBERNETES_pod_port="80"
+KUBERNETES_pod_name="equalexpert"
+
+setup
+exit 0

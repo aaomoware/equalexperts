@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# A A Omoware
+# Creates a new gists
+# https://developer.github.com/v3/auth/
+# https://developer.github.com/v3/gists/
+#------------------------------------------
+
+# simulate a new gist
+function create_new_gists () {
+	curl \
+		--user "$GIST_user:$token" \
+		--request POST \
+		--data '{"description":"equalexperts test","public":"true","files":{"eq.txt":{"content":"equalexperts test"}}' $GIST_api
+}
+
+#----
+
+token='55596fab88da837c6b877bd48bfa34aa84d82490'
+GIST_user="aaomoware"
+GIST_api="https://api.github.com/gists"
+
+create_new_gists
+exit 0

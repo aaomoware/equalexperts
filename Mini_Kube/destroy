@@ -1,0 +1,21 @@
+#!/bin/bash -x
+
+# A A Omoware
+# Clean destroy
+#---------------
+
+KUBERNETES_pod_name="equalexpert"
+
+kubectl delete service $KUBERNETES_pod_name
+kubectl delete deployment $KUBERNETES_pod_name
+
+minikube delete
+systemctl stop docker.service
+
+apt-get purge docker-ce virtualbox -y
+
+cd /usr/local/bin
+rm -rf minikube kubectl
+
+cd ~/
+rm -rf .minikube

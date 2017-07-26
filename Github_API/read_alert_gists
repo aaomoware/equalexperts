@@ -1,0 +1,54 @@
+#!/bin/bash 
+
+# A A Omoware
+# Reads, and alerts of new gists
+# $token will bypass Gutbub API rate limiit
+# https://developer.github.com/v3/auth/
+# https://developer.github.com/v3/gists/
+#---------------------------------------------
+
+# read, and alert new gists
+function read_alert_gists () {
+	if [ "$GIST_new" -gt "$GIST_current" ] 
+	then
+		echo -e "${red}Hey equalexperts, $GIST_user has a new gist!${default}"
+		GIST_current=$GIST_new
+		sleep 2  # if not the alert new gist message will go by quickly
+		list_gists
+	fi
+	GIST_new=$(current_gist)
+}
+
+function current_gist() {
+	if [[ -z $token ]]; then
+		curl -s https://api.github.com/users/$GIST_user/gists | grep -ic 'gist_id'
+	else
+		curl -s -H "Authorization: token $token" https://api.github.com/users/$GIST_user/gists | grep -ic 'gist_id'
+	fi
+}
+
+function list_gists() {
+	if [[ -z $token ]]; then
+		curl https://api.github.com/users/$GIST_user/gists
+		echo -e "\n${blue}$GIST_user currently has $GIST_current gists ${default}\n"
+	else
+		curl -H "Authorization: token $token" https://api.github.com/users/$GIST_user/gists
+		echo -e "\n${blue}$GIST_user currently has $GIST_current gists ${default}\n"
+	fi	
+}
+#----
+
+red='\033[0;31m'
+blue='\033[0;34m'
+default='\033[0m'
+token='55596fab88da837c6b877bd48bfa34aa84d82490'
+
+GIST_user="aaomoware"
+GIST_new=$(current_gist)
+GIST_current=$(current_gist)
+
+
+list_gists
+while [ true ]; do
+	read_alert_gists
+done

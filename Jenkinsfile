@@ -1,8 +1,12 @@
 node {
     stage ("Github_API") {
-   	 echo  "Github_API routine goes in here"
+   	 echo  "Github_API goes in here"
     }
-    stage ("ini_Kube") {
-    	echo "Mini_Kube routing goes in here"
+    stage ("Mini_Kube") {
+    	echo "Mini_Kube goes in here"
+    }
+    stage ("Vagrant_CI") {
+        echo "Vagrant_CI goes in here"
     }
 }
+
