@@ -15,6 +15,4 @@ Codename:	xenial
 ```
 
 ## hey!
-```
-Comment out this line "minikube service $KUBERNETES_pod_name" in the setup script if your box is headless.
-```
+Comment out this line ```minikube service $KUBERNETES_pod_name``` in the setup script if your box is headless.
