@@ -8,16 +8,19 @@ ansible 2.2.0.0
 CentOS7
 
 ## jenkins creds
+```
 username: vagrant
 password: vagrant
+```
 
 ## jenkins
 http://192.168.2.64:8080
 
 ## tested on
+```
 Distributor ID:	Ubuntu
 Description:	Ubuntu 16.04.2 LTS
 Release:	16.04
 Codename:	xenial
-
+```
 
