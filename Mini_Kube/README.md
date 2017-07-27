@@ -1,4 +1,4 @@
-## tnstalls
+## installs
 ```
 docker
 virtualbox
