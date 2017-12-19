@@ -1,5 +1,5 @@
 ## ci
-Installs jenkins, config admin account, get plugins, and creates a small job - using Jekninsfile
+Installs jenkins, creates admin account, get plugins, and creates a small job - using Jekninsfile
 
 ## ansible
 ansible 2.2.0.0
@@ -23,4 +23,3 @@ Description:	Ubuntu 16.04.2 LTS
 Release:	16.04
 Codename:	xenial
 ```
-
